@@ -1,0 +1,4 @@
+$('#Story-Task-List').html('<%= escape_javascript(render :partial => "task_list", :locals => {:story => @task.story}) %>');
+$('#Task-Updation-Option_<%= @task.id %>').hide();
+$('#Task-Details_<%= @task.id %>').html('<%= escape_javascript(<%= t.description %>)');
+$('#task_item_<%= @task.id %>').effect('highlight', {}, 10000);             

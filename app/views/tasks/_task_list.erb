@@ -1,0 +1,28 @@
+<strong>Tasks[<%= story.tasks.blank? ? 0 : story.tasks.size %>]:</strong><br /><br />
+<% unless story.tasks.blank? %>
+  <% story.tasks.each do |t| %>
+    <div id="task_item_<%= t.id %>" class="clearFix">
+      <div class="fLeft" id="Task-Details_<%= t.id %>">
+        <%= link_to check_box_tag('task_status', '', t.status), update_task_status_project_story_tasks_path(project.id, story.id, :task_id => t), :class => 'remote' %> <%= t.description %> 
+      </div>
+      <div class="" id="Task-Options_<%= t.id %>">
+				<%= link_to '<span class="ui-icon ui-icon-pencil"></span>', edit_project_story_task_path(project.id, story.id, :id => t.id), :class => "remote", :style => "margin-left:10px;float:left;", :id => "Update-Link-For-Task" %>        
+        
+				<%= link_to '<span class="ui-icon ui-icon-trash"></span>', project_story_task_path(project.id, story.id, :id => t), {:confirm => 'Are you sure?', :class => "remoteDelete", :style => "float:left;"} %>
+      </div>
+      <div id="Task-Updation-Option_<%= t.id %>" style="display:none;">
+        <% form_for :task, @task, :url => project_story_task_path(project.id, story.id, :id => t.id), :html => {:method => :put, :class => 'remote', :id => "Task-Updation-From"} do |f| %>
+          <p>
+            <%= f.label :description %><br />
+            <%= f.text_area :description, :value => t.description , :rows => 1, :class => 'iTextArea ui-corner-all' %>
+          </p>
+          <p>
+            <%= f.submit "Update", :class => 'ui-state-hover ui-corner-all', :style => "padding:7px;" %> 
+						<%= link_to "<span class='ui-icon ui-icon-arrowreturnthick-1-w'></span> Cancel", edit_project_story_task_path(project.id, story.id, :id => t, :option => "cancle"), :class => "ui-state-hover ui-corner-all dialog_link remote" %>
+          </p>          
+        <% end %>        
+      </div>
+    </div>
+  <% end %>
+<% end %>
+

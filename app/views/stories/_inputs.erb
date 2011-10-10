@@ -1,0 +1,7 @@
+<%= f.input :title, :input_html => {:class => "iTextArea ui-corner-all", :style => "padding:3px;"} %>
+<%= f.input :description, :as => :text, :input_html => { :rows => 10, :class => "ui-corner-all"  } %>
+<%= f.input :story_type, :as => :select, :collection => Story::STORY_TYPES, :input_html => {:class => "ui-widget-content ui-corner-all iSelect", :style => "padding:2px;"} %>
+<%= f.input :requested_by_id, :as  => :select, :collection => User.all, :input_html => {:class => "ui-widget-content ui-corner-all iSelect", :style => "padding:2px;"} %>
+<%= f.input :owned_by_id, :as  => :select, :collection => User.all, :input_html => {:class => "ui-widget-content ui-corner-all iSelect", :style => "padding:2px;"} %>
+<%= f.input :estimate, :as => :select, :collection => Story::ESTIMATE, :input_html => {:class => "ui-widget-content ui-corner-all iSelect", :style => "padding:2px;"} %>
+<%= f.input :tag_list %>

@@ -1,0 +1,1 @@
+$('#Story-Task-List_<%= @story.id %>').html('<%= escape_javascript(render :partial => "tasks/task_list", :locals => {:story => @story, :project => @project}) %>');

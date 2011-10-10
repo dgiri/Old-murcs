@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  story_id: 1
+  user_id: 1
+  action: MyString
+  action_time: 2011-07-12 13:43:42
+
+two:
+  story_id: 1
+  user_id: 1
+  action: MyString
+  action_time: 2011-07-12 13:43:42

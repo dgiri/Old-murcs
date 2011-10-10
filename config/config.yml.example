@@ -1,0 +1,16 @@
+defaults: &defaults
+  support_email: support@murcsloot.local
+  host: murcsloot.local
+
+development:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
+test: &TEST
+  <<: *defaults
+
+cucumber:
+  <<: *TEST
+

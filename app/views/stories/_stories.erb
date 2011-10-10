@@ -1,0 +1,31 @@
+<% stories.each do |story| %>
+  <div class="innerBorder sortable-item" id="<%= dom_id(story) %>" project_id="<%= story.project.id %>" story_id="<%= story.id %>" story_status="<%= story.current_state %>">
+		<div class="handle" id ="story-sort-Details_<%= story.id %>">  
+	    <span class="storyType"><%= story.story_type[0].chr %> </span><%= link_to story.title, edit_project_story_path(@project, story), :class => "remote" %>
+
+	    <% if story.current_state == "icebox" %>
+	      <%= link_to "<span class='confirmButton'>Confirm</span>", 
+	'#', :id => "Confirm_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'moved to backlog');" %>     
+	    <% elsif story.current_state == "backlog" %>
+	      <%= link_to "<span class='startButton'>Start</span>", '#', :id => "Start_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'started');" %>
+	         
+	    <% elsif story.current_state == "started" %>
+	      
+	      <%= link_to "<span class='finishButton'>Finish</span>", '#', :id => "Finish_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'finished');" %>
+	    <% elsif story.current_state == "finished" %>  
+	      <%= link_to "<span class='deliverButton'>Deliver</span>", '#', :id => "Deliver_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'delivered');" %>
+	    <% elsif story.current_state == "delivered" %>  
+	      <%= link_to "<span class='acceptButton'>Accept</span>", '#', :id => "Accept_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'accepted');" %>
+	      <%= link_to "<span class='rejectButton'>Reject</span>", '#', :id => "Reject_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'rejected');" %>    
+	    <% elsif story.current_state == "rejected" %> 
+	      <%= link_to "<span class='restartButton'>Restart</span>", '#', :id => "Restart_#{story.id}", :project_id => @project.id, :story_id => story.id, :onclick => "changeState(this, 'started');" %> 
+	    <% else %>       
+	    <% end %>
+	  </div>
+	
+		<div id="story-Details_<%= story.id %>" style ="display:none;">
+		  <%= render :partial => "edit", :locals => {:story => story, :project => @project} %>
+		</div>
+	</div>		
+<% end %>
+

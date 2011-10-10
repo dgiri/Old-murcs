@@ -1,0 +1,25 @@
+<div class="grids" id='viewPanelHolder'>
+    <fieldset class='storiesPane'>
+			<span class='columnHeader'>Histories</span>
+			<div class="sortable-list" data-offset="0">
+				<% if params[:story_id] %>
+				  <ul>
+				    <% @all_histories.each do |history| %>
+				      <li><%= history.action_time %> <%= history.user.username %> <%= history.new_state %> this <%= history.story.story_type.downcase %> <%= history.old_state if history.old_state %></li>
+				    <% end %>		
+				  </ul>
+							<%= will_paginate @all_histories %>
+				<% else %>
+				  	<% @story_histories.each do |story| %>
+				  		<%= story.title %>
+				  <ul>  
+				  	<% story.histories.each do |history| %>
+				    	<li><%= history.action_time %> <%= history.user.username %> <%= history.new_state %> this <%= story.story_type.downcase %> <%= history.old_state if history.old_state %></li>
+				  <% end %>	
+				  </ul> 
+				  <br/> 
+				  	<% end %>
+							<%= will_paginate @story_histories %>
+				<% end %>
+    </fieldset>
+</div>

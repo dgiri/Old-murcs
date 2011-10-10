@@ -1,0 +1,7 @@
+<% current_user.projects.each do |project| %>
+<div class="innerBorder" id="<%= dom_id(project) %>">  
+	<fieldset>
+		<strong><%= link_to (project.name), project_stories_path(project) %></strong> -> <%= link_to "Members", project_memberships_path(project) %><br/>
+	</fieldset>	
+</div>	
+<% end %>

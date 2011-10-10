@@ -1,0 +1,9 @@
+Hi,
+
+<p>
+<%= @membership.sender_full_name %> has invited you to join the project - <strong><%= @membership.project.name %></strong>.
+</p>
+
+<p>
+Click this link <%= link_to signup_url(:membership_token => @membership.token), signup_url(:membership_token => @membership.token) %> to accept the invitation.
+</p>

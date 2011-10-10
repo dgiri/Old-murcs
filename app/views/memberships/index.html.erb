@@ -1,0 +1,23 @@
+<h2>Members</h2>
+
+<% permitted_to? :create, :memberships do %>
+  <%= render :partial => "add_member" %>
+<% end %>
+
+<hr>
+
+<% if @memberships.any? %>
+  <table border="1" cellspacing="5" cellpadding="5" width="100%">
+    <tr>
+      <td width="50%">Name</th>
+      <th width="25%">Role</th>
+      <th width="25%">Invitation</th>
+    </tr>
+    <% @memberships.each do |membership| %>
+      <tr>
+        <td><%= membership.member_name %></td>
+        <td><%= membership.role.title %></td>
+        <td><%= membership.active? ? 'Accepted' : 'Pending' %></td>
+      </tr>
+    <% end %>
+<% end %>

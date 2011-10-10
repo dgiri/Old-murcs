@@ -1,0 +1,7 @@
+<% projects.each do |project| %>
+	<ul id="<%= dom_id(project)%>">
+		<li>
+			<strong><%= link_to "#{project.name}", project_stories_path(project)  %></strong>
+		</li>
+	</ul>
+<% end %>

@@ -1,0 +1,90 @@
+
+<div class='welcomeMessage'>Welcome to Murcs </div>
+<div class='clear'></div>
+
+
+<div class="grids" id='viewPanelHolder'>
+  <div class='g1of2'>
+    <fieldset class='storiesPane'>
+      <div class="frontPageColumnHeader">Projects</div>
+      <div style='float: right;'><%= link_to '<span class="button"><b style="text-weight:bolder;">+</b> Add project</span>', new_project_path, :id => "create_A_Project" %></div>
+			
+			<div id="dialog-form" title="Add a project" class="create-post" style="display:none">
+				<% form_for :project, @project, :url => projects_path, :html => {:class => "remote", :id => "new_Project_Form"} do |f| %>
+				<p id="new_Project_Errors" style="display:none;"></p>
+				  <div class="pAll5">
+					  <%= f.label :name, "Name :" %>
+			      <%= f.text_field :name, :rows => 5, :cols => 60 %>
+					</div>
+				<% end %>
+			</div>	
+			
+      <div class='clear'></div>
+     
+      
+     	<div id="dashboard_Project_List">
+				<% unless @projects.blank? %>
+					<%= render :partial => 'project_list', :locals => {:projects => @projects} %>
+				<% end %>
+			</div>
+     	
+     </fieldset>
+  </div>
+
+  <div class="g1of2">
+      <fieldset class='storiesPane'>
+            <div style="padding:10px;">
+        <span class='columnHeader'>Histories</span>
+  			<div class="sortable-list" data-offset="0">
+        	<% unless @histories.blank? %>
+  					<% @histories.each do |h| %>
+  						<% unless h.story.blank? %>
+  								<ul>
+  									<li><%= h.action_time.strftime("%Y-%m-%d %H:%M:%S") %> <strong><%= link_to h.story.title, project_stories_path(h.story.project, :story_id => h.story) %></strong>, <%= h.user.username %> <%= h.new_state %> this <%= h.story.story_type %></li>
+  								</ul>
+  						<% end  %>
+  					<% end %>
+  				<% else %>
+  			  <% end %>
+  			  <%= will_paginate @histories %>
+  			</div>
+  			      </div>
+      </fieldset>
+  </div>
+</div>
+
+
+<% content_for :js do %>
+  <script type="text/javascript">
+    $(function() {
+    	$("#dialog").dialog("destroy");
+	
+    	$("#dialog-form").dialog({
+    		autoOpen: false,
+        width: 550,
+    		modal: true,
+    		buttons: {
+    			'Create': function() {
+    			  $("#new_Project_Form").submit(); 
+    			  $("#new_Project_Form").resetForm(); 
+    			  $(this).dialog("close"); 
+    			},
+    			Cancel: function() {
+    			  $("#new_Project_Errors").hide(); 
+    				$(this).dialog('close');
+    			}
+    		},
+    	});
+	
+      $('#create_A_Project').click(function(e) {
+         $('#dialog-form').dialog('open');
+         e.preventDefault();
+       });
+    	
+			$("#new_Project_Form").submit(function(e){
+				$("#new_Project_Form").resetForm(); 
+			  $("#dialog-form").dialog("close");			  
+			}); 
+    });
+  </script>
+<% end %>

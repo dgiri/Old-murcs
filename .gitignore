@@ -1,0 +1,15 @@
+config/config.yml
+config/database.yml
+db/schema.rb
+db/*.sqlite3
+log/*.log
+tmp/**/*
+coverage/*
+features_rcov/*
+.idea
+vendor/gems/*
+coverage.data
+rerun.txt
+.DS_Store
+.rvmrc
+config/setup_load_paths.rb

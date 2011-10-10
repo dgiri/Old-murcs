@@ -1,0 +1,10 @@
+<% semantic_form_for [@project, @story], :html => {:class => "remote story_form"} do |f| %>
+    <%#= f.error_messages %>
+		<p id="story_errors"></p>
+    <% f.inputs do %>
+        <%= render :partial => "inputs", :locals => { :f => f } %>
+    <% end %>
+    <% f.buttons do %>
+        <%= f.commit_button "Add" %> Or <%= link_to "Cancel", project_stories_path %>
+    <% end %>
+<% end %>

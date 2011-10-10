@@ -1,0 +1,47 @@
+# Mac OS X local setup for postgresql
+# 
+# Install Postgres:
+# brew install postgresql
+# 
+# Post install configurations:
+# initdb /usr/local/var/postgres
+# cp /usr/local/Cellar/postgresql/9.0.3/org.postgresql.postgres.plist ~/Library/LaunchAgents/
+# launchctl load -w ~/Library/LaunchAgents/org.postgresql.postgres.plist
+# 
+# Run Postgres daemon:
+# pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+# 
+# Commandline client setup:
+# psql -d postgres < /usr/local/Cellar/postgresql/9.0.3/share/contrib/adminpack.sql 
+# 
+# Run commandline client:
+# psql postgres
+# 
+# Install pgAdmin as graphical tool. Download it from http://wwwmaster.postgresql.org/download/mirrors-ftp/pgadmin3/release/v1.12.2/osx/pgadmin3-1.12.2.dmg
+# 
+# Install postgres gem:
+# env ARCHFLAGS="-arch x86_64" gem install pg
+
+development:
+  adapter: postgresql
+  encoding: utf8
+  database: murcsloot_development
+  pool: 5
+  username: <computer_user_name>
+  password: <computer_user_password>
+
+test:
+  adapter: postgresql
+  encoding: utf8
+  database: murcsloot_test
+  pool: 5
+  username: <computer_user_name>
+  password: <computer_user_password>
+
+production:
+  adapter: postgresql
+  encoding: utf8
+  database: murcsloot_production
+  pool: 5
+  username: support_ticketing_system
+  password: abc!@#xyz123

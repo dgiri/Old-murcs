@@ -1,0 +1,9 @@
+<% unless params[:option] %>
+  $('#Task-Details_<%= @task.id %>').hide();
+  $('#Task-Options_<%= @task.id %>').hide(); 
+  $('#Task-Updation-Option_<%= @task.id %>').show();
+<% else %>
+  $('#Task-Details_<%= @task.id %>').show();  
+  $('#Task-Options_<%= @task.id %>').show(); 
+  $('#Task-Updation-Option_<%= @task.id %>').hide();           
+<% end %>

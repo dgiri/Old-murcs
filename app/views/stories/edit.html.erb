@@ -1,0 +1,91 @@
+<fieldset>
+  <legend class="ui-widget-header ui-corner-all" style="padding:10px;"><%= @story.story_type.capitalize %> details</legend> 
+
+<% semantic_form_for [@project, @story], :html => {:style => "margin-left:10px;"} do |f| %>
+    <%= f.error_messages %>
+    <% f.inputs do %>
+        <%= render :partial => "inputs", :locals => { :f => f } %>
+    <% end %>
+    <% f.buttons do %>
+        <%#= f.commit_button "Update", :class => '', :style => "padding:15px;" %>
+				<li class="update">
+				   <%= f.submit "Update", :class => "ui-state-default ui-corner-all ui-state-hover", :style => "padding:5px;" %>
+				<li>	      
+    <% end %>
+
+		<p style="float:right;">
+			<%= link_to "<span class='ui-icon ui-icon-arrowreturnthick-1-w'></span> Cancel", '#', :class => "ui-state-hover ui-corner-all dialog_link", :style =>" margin-top:10px;" %>        
+
+			<%= link_to "<span class='ui-icon ui-icon-comment'></span>Post a Comment", '#', :class => "ui-state-hover ui-corner-all dialog_link", :id => "create_post" %>
+		</p>
+		
+<% end %>
+</fieldset>
+<hr/>
+<div class="effect ui-corner-all">
+	<div id="Story-Task-List">
+    <%= render :partial => 'tasks/task_list', :locals => {:story => @story} %>
+  </div>
+  
+	<% form_for :task, @task, :url => project_story_tasks_path(:story_id => @story, :project_id => @project), :html => {:method => :post, :class => 'remote', :id => "Task-Creation-From"} do |f| %>
+    <%= f.error_messages %>
+    <p>
+      <%= f.label :description, "Add a new task" %><br />
+      <%= f.text_area :description, :rows => 1, :class => 'iTextArea ui-corner-all' %>
+    </p>
+    <p>
+      <%= f.submit 'Add Task', :class => 'ui-state-hover ui-corner-all', :style => "padding:5px;" %>
+    </p>
+  <% end %>  
+</div>
+
+<hr/>
+
+<div class="effect ui-corner-all">
+	<div id="Comment-List"><%= render :partial => '/comments/comments_list', :locals => {:story => @story} %></div>
+	
+	<div id="dialog-form" title="Post a comment" class="create-post" style="display:none;">	
+		<% form_for :comment, @comment, :url => comments_path(:story_id => @story.id, :project_id => @project.id), :html => {:class => "remote", :id => "new_comment"} do |f| %>
+		<p class="validateTips" id="new_comment_errors" style="display:none;"><%#= f.error_messages %></p>
+		  <div>
+			  <%= f.label :body, "Comments :" %>
+	      <%= f.text_area :body, :rows => 5, :class => '' %>
+			</div>
+		<% end %>
+	</div>		
+</div>
+
+
+<% content_for :js do %>
+  <script type="text/javascript">
+    $(function() {
+
+    	$("#dialog").dialog("destroy");
+	
+    	$("#dialog-form").dialog({
+    		autoOpen: false,
+        // height: 380,
+        width: 550,
+    		modal: true,
+    		buttons: {
+    			'Post It': function() {
+    			  $("#new_comment").submit(); 
+    			  $("#new_comment").resetForm(); 
+    			  $(this).dialog("close"); 
+    			},
+    			Cancel: function() {
+    			  $("#new_comment_errors").hide(); 
+    				$(this).dialog('close');
+    			}
+    		},
+    	});
+	
+      $('#create_post').click(function(e) {
+         $('#dialog-form').dialog('open');
+         e.preventDefault();
+       });
+    
+      // $().scrollTo("#post-Comments-heading");
+    });
+  </script>
+<% end %>

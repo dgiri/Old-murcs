@@ -1,0 +1,9 @@
+<strong>Comments (<%= story.comments.size %>) :</strong><hr>
+<% story.comments.desc_comments.each do |comment| %>
+  <div id="comment_Item_<%=comment.id%>" class="donate ui-corner-all effect">
+    <p style="padding:5px;">
+      <%= comment.body %> <br />
+      <strong>Posted By: <%= comment.user.email %> on <%= created_on(comment.created_at) %></strong>
+    </p>
+  </div><br />
+<% end %>

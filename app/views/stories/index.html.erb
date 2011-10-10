@@ -1,0 +1,223 @@
+  <div class='projectName'>
+  <span class='projectNameText'> <%= @project.name %> </span><span class='velocityText'>Velocity</span> <span class='velocityNumber'><%= velocity %></span>
+</div>
+
+<div style='clear:both;'></div>
+<div class='topNav'>
+  <div style='float: left'>
+    
+      <%= link_to "<span class='button'>Icebox</span>", tracker_column_project_path(@project, :tracker_column => 'icebox'), {:id => "icebox_link", :onclick => "ml.selectView(this, 'icebox'); return false;"} %>
+    
+    
+      <%= link_to "<span class='button'>Backlog</span>", tracker_column_project_path(@project, :tracker_column => 'backlog'), {:id => "backlog_link", :onclick => "ml.selectView(this, 'backlog'); return false;"} %>
+
+      <%= link_to "<span class='button'>InDev</span>", tracker_column_project_path(@project, :tracker_column => 'indev'), {:id => "indev_link", :onclick => "ml.selectView(this, 'indev'); return false;"} %>
+      
+      <%= link_to "<span class='button'>Done</span>", tracker_column_project_path(@project, :tracker_column => 'done'), {:id => "done_link", :onclick => "ml.selectView(this, 'done'); return false;"} %>
+  </div>
+  <div style='float: right'>
+      <%= link_to "<span class='button'><b style='text-weight:bolder;'>+</b> New Story</span>", new_project_story_path(@project), :class => 'create_story remote' %>
+      <%= link_to_if permitted_to?(:edit, :projects), "<span class='button'>Setting</span>", edit_project_path(@project) %>
+      <%= link_to "<span class='button'>History</span>", project_histories_path(@project) %>
+  </div>
+</div>
+
+<div class="grids" id='viewPanelHolder'>
+  <div id="icebox" class='' style="display: none;">    
+    <fieldset class='storiesPane'>
+      <span class='columnHeader'>Icebox</span>
+      <div id="new_story_div"></div>
+			<div id="test-sort1" class="sortable-list" data-offset="0">
+      	<%= filtered_stories(@stories, Story::STORY_STATES[:icebox]) %>
+			</div>
+    </fieldset>
+  </div>
+
+  <div id="backlog" class='' style="display: none;">
+    <fieldset class='storiesPane'>
+      <span class='columnHeader'>Backlog</span>
+			<div id="test-sort2" class="sortable-list">
+      	<%= filtered_stories(@stories, Story::STORY_STATES[:backlog]) %>
+			</div>
+    </fieldset>
+  </div>
+
+  <div id="indev"  class='' style="display: none;">
+    <fieldset class='storiesPane'>
+      <span class='columnHeader'>InDev</span>
+			<div id="test-sort3" class="sortable-list">
+	      <%= filtered_stories(@stories, Story::STORY_STATES[:started]) %>
+	      <%= filtered_stories(@stories, Story::STORY_STATES[:finished]) %>
+	      <%= filtered_stories(@stories, Story::STORY_STATES[:delivered]) %>
+	      <%= filtered_stories(@stories, Story::STORY_STATES[:rejected]) %>
+			</div>
+    </fieldset>
+  </div>
+
+  <div id="done"  class='' style="display: none;">
+    <fieldset id="done_stories" class='storiesPane'>
+      <span class='columnHeader'>Done</span>
+      <%= filtered_stories(@stories, Story::STORY_STATES[:accepted]) %>
+    </fieldset>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  SELECTED_VIEW_COLUMNS = <%= raw(@tracker_columns.inspect) %>;
+  <% if params[:story_id] %>
+    var state = '<%= current_column(@story) %>';
+    if($.inArray(state, SELECTED_VIEW_COLUMNS) == -1){
+      ml.selectView($('#'+state+'_link'), state);      
+      }
+    $("#story-sort-Details_<%= @story.id %>").hide();
+    $("#story-Details_<%= @story.id %>").show();
+    $("#story-Details_<%= @story.id %>").effect('highlight', {}, 5000);
+  <% end %>
+	
+	$('#viewPanelHolder .sortable-list').sortable({cursor: 'move', connectWith: '#viewPanelHolder .sortable-list', stop: function(event, ui) {  
+		var source = $(this);
+		var a = $(ui.item).attr("project_id");
+		var b = $(ui.item).attr("story_id");
+		var status = $(ui.item).parent().parent().parent().attr('id');
+		var current_status = source.parent().parent().attr('id');
+		var change_status = $(ui.item).parent();
+
+		if (current_status == status){
+			$.ajax({
+		      url: '/projects/'+a+'/stories/'+b+'/update_status?target='+status,
+		      dataType: "script",
+		      type: "PUT",
+					data: {
+                   'stories[]' : source.sortable('toArray')
+					}
+		  });		
+				
+		}else{
+			
+			$.ajax({
+		      url: '/projects/'+a+'/stories/'+b+'/update_status?target='+status,
+		      dataType: "script",
+		      type: "PUT",
+					data: {
+                   'stories[]' : change_status.sortable('toArray')
+					}					
+		  });		
+		}
+		if(status == "backlog" && current_status == "icebox"){
+			element = "#Confirm_"+b;
+			st = "moved to backlog";
+		}
+		if(status == "backlog" && current_status == "indev"){
+			element = "#Finish_"+b;
+			st = "moved to backlog";
+		}
+		if(status == "indev" && current_status == "icebox"){
+			element = "#Confirm_"+b;
+			st = "started";
+		}
+		if(status == "indev" && current_status == "backlog"){
+			element = "#Start_"+b;
+			st = "started";
+		}
+		if(status == "icebox" && current_status == "indev"){
+			element = "#Finish_"+b;
+			st = "moved to icebox";
+		}
+		if(status == "icebox" && current_status == "backlog"){
+			element = "#Start_"+b;
+			st = "moved to icebox";
+		}
+
+		changeButton(element, st);
+		$(ui.item).effect("highlight", {color: '#BCCBD5'}, 3000);
+			
+  }});
+
+	$("#story_story_type").live("change", function(e) { 		
+		if ($(this).attr('value') != "Feature"){
+			$('#story_estimate').attr('disabled', 'disabled');
+		}else{
+			$('#story_estimate').removeAttr('disabled');
+		}	  
+	});
+	
+	function changeState(element, status){		
+			var a = $(element).attr("project_id");
+			var b = $(element).attr("story_id");
+			if(status == "accepted"){
+				var div_id = "#done_stories";
+				
+			}
+			if(status == "moved to backlog"){
+				var div_id = "#test-sort2";
+				
+			}
+			if(status == "started"){
+				var div_id = '#test-sort3';
+			}
+			
+			var children = [];
+			var i = 0
+			$(div_id).children('div').each(function(){
+			        children[i] = $(this).attr('id');
+			        i = i + 1
+			      });
+			
+			$.ajax({
+		      url: '/projects/'+a+'/stories/'+b+'/change_state?target='+status,
+		      dataType: "script",
+		      type: "PUT",
+					data: {
+						'stories[]' : children
+					},
+					success: $('#story_'+b).appendTo(div_id)
+		  });
+			changeButton(element, status) 
+	}
+	
+	function changeButton(element, status) {
+		// alert($(element).attr('story_id'));
+	var story_id = $(element).attr('story_id');
+	if(status == "moved to backlog"){
+		$(element).html("<span class='startButton'>Start</span>");
+	  $(element).attr('onclick',"changeState(this, 'started');");
+	  $(element).attr('id',"Start_"+story_id);
+	}
+	if(status == "moved to icebox"){
+		$(element).html("<span class='confirmButton'>Confirm</span>");
+	  $(element).attr('onclick',"changeState(this, 'moved to backlog');");
+	  $(element).attr('id',"Confirm_"+story_id);
+	}
+	if(status == "started"){
+		$(element).html("<span class='finishButton'>Finish</span>");
+	  $(element).attr('onclick',"changeState(this, 'finished');");
+	$(element).attr('id',"Finish_"+story_id);
+	}
+	if(status == "accepted"){
+		$(element).html("");
+		
+	}
+	if(status == "finished"){
+		$(element).html("<span class='deliverButton'>Deliver</span>");
+	  $(element).attr('onclick',"changeState(this, 'delivered');");
+		$(element).attr('id',"Deliver_"+story_id);
+	
+		
+	}
+	if(status == "delivered"){
+		$(element).html("<span class='acceptButton'>Accept</span>");
+	  $(element).attr('onclick',"changeState(this, 'accepted');");
+	$(element).attr('id',"Accept_"+story_id);
+	$(element).parent().append('<a story_id='+$(element).attr('story_id')+' project_id='+$(element).attr('story_id')+' href="#" onclick="changeState(this, \'rejected\');" id="Reject_' + story_id +'"><span class=\'rejectButton\'>Reject</span></a>')
+		
+	}
+	if(status == "rejected"){
+		$(element).html("<span class='restartButton'>Restart</span>");
+	  $(element).attr('onclick',"changeState(this, 'started');");
+		$(element).attr('id',"Start_"+story_id);
+		$("#Accept_"+story_id).remove();			
+	}
+}
+	
+</script>

@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Murcs Loot</title>
+  <%= stylesheet_link_tag 'application', 'formtastic', 'formtastic_changes', 'jquery-ui-1.8.14.custom', 'grid', 'style', 'jquery.tagsinput.css' %>
+	<%= javascript_include_tag 'jquery', 'jquery-ui-1.8.14.custom.min', 'jquery.livequery', 'jquery.validate', 'jquery.metadata', 'jquery.form', 'jquery.tagsinput.js', 'application', 'dashboard' %>
+  <%= sprockets_include_tag %>
+</head>
+<body>
+  <div id='outerMostDiv'>
+    <div id='logo'>M u r c s</div>
+    <div style='clear:both;'></div>
+    <div id='container'>
+      <div id='mainNav'>
+    <% if current_user %>
+      <%= link_to "Home", root_url %> |
+      <%= link_to "All Projects", projects_path %> |
+      <%= link_to "Logout", logout_path %>
+    <% else %>
+      <% if params[:controller] != 'users'%>
+        <%= link_to "Signup", signup_path %>
+      <% end %>
+        <% if params[:controller] != 'user_sessions'%>
+          <%= link_to "Login", login_path %>
+        <% end %>
+      <% end %>
+      </div>
+      <% [:notice, :alert, :error].each do |key| %>
+      <% if flash[key] %>
+      <div class='notice' id='<%= key %>'><%= flash[key] %></div>
+      <% end %>
+    <% end %>
+      <%= yield %>
+    </div>
+  </div>
+	<%= yield(:js) %>	
+</body>
+</html>

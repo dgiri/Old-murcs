@@ -1,0 +1,3 @@
+$('#Story-Task-List_<%= @story.id %>').html('<%= escape_javascript(render :partial => "task_list", :locals => {:story => @story, :project => @project}) %>');
+$('#task_item_<%= @task.id %>').effect('highlight', {}, 10000);
+$('#Task-Creation-From ').resetForm();

@@ -1,0 +1,13 @@
+<div class='loginForm'>
+  <span class='columnHeader'>Login</span>
+    <% semantic_form_for @user_session do |f| %>
+      <%= f.error_messages %>
+      <% f.inputs do %>
+        <%= f.input :login, :label => 'Email or Username', :style => 'width: auto;' %>
+        <%= f.input :password %>
+      <% end %>
+      <% f.buttons do %>
+        <%= f.commit_button "Login" %>
+      <% end %>
+    <% end %>
+</div>

@@ -1,0 +1,13 @@
+<h1>Signup</h1>
+<% semantic_form_for @user, :url => users_path(:membership_token => params[:membership_token]) do |f| %>
+  <%= f.error_messages %>
+  <% f.inputs do %>
+    <%= f.input :username %>
+    <%= f.input :email %>
+    <%= f.input :password %>
+    <%= f.input :password_confirmation %>
+  <% end %>
+  <% f.buttons do %>
+    <%= f.commit_button "Sign Up" %> 
+  <% end %>
+<% end %>
